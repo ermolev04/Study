@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="WsppTest">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/wspp/WsppTest.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

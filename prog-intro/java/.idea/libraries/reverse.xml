@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="reverse">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/reverse/ReverseTest.jar!/" />
+      <root url="jar://$PROJECT_DIR$/reverse/FastReverseTest.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
