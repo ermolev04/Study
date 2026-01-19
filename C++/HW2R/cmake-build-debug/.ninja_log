@@ -1,0 +1,17 @@
+# ninja log v5
+0	45	7367428714346649	lib/CMakeFiles/quat.dir/quat.cpp.obj	f9bee6506a94cac4
+45	95	7367428714856633	lib/libquat.a	e2376390e3a0fce
+4	476	7367428718656630	src/CMakeFiles/HW2.dir/main.cpp.obj	a9c3d0f192fedf03
+487	823	7367428719456626	src/HW2.exe	7425406057c0a329
+1	81	7367428841473978	lib/CMakeFiles/quat.dir/quat.cpp.obj	f9bee6506a94cac4
+81	152	7367428842183966	lib/libquat.a	e2376390e3a0fce
+10	1959	7367428860263975	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	2037ac1058850f91
+14	8717	7367428927693932	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	3d08d77febb344ee
+2	42	7367429009035654	lib/CMakeFiles/quat.dir/quat.cpp.obj	f9bee6506a94cac4
+42	101	7367429009635681	lib/libquat.a	e2376390e3a0fce
+5	476	7367429013375846	src/CMakeFiles/HW2.dir/main.cpp.obj	a9c3d0f192fedf03
+477	859	7367429014185844	src/HW2.exe	7425406057c0a329
+3	52	7367429111750455	lib/CMakeFiles/quat.dir/quat.cpp.obj	f9bee6506a94cac4
+52	108	7367429112330474	lib/libquat.a	e2376390e3a0fce
+9	1631	7367429127550464	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	2037ac1058850f91
+12	8363	7367429194700794	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	3d08d77febb344ee

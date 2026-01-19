@@ -1,0 +1,9 @@
+﻿  main.c.cpp
+D:\Всё полезное\C++\main.c\main.c.cpp(14,9): warning C4244: 'return': conversion from 'int64_t' to 'uint32_t', possible loss of data
+D:\Всё полезное\C++\main.c\main.c.cpp(109,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Generating code
+  8 of 15 functions (53.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  main.c.vcxproj -> D:\Всё полезное\C++\main.c\x64\Release\main.exe

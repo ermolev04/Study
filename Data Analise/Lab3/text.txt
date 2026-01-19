@@ -1,0 +1,22 @@
+Close
+p-value = 0.738066
+Вывод: ряд НЕстационарный (p-value ≥ 0.05)
+log(Close)
+p-value = 0.884466
+Вывод: ряд НЕстационарный (p-value ≥ 0.05)
+Δlog(Close)
+p-value = 0.000000
+Вывод: ряд можно считать стационарным (p-value < 0.05)
+
+Лучшие гиперпараметры GD-регрессии:
+{'rmse': np.float64(14017.492163588608), 'lr': 0.05, 'lambda1': 0.01, 'lambda2': 0.0}
+18:18:06 - cmdstanpy - INFO - Chain [1] start processing
+18:18:08 - cmdstanpy - INFO - Chain [1] done processing
+
+Метрики (на тесте, в ценах Close)
+                           MAE        RMSE
+GD (Δlog→price)    17,996.0142 22,252.0197
+GD (Close)          1,703.7991  2,302.3128
+Naive (Δlog→price) 14,879.9427 17,863.8596
+Holt-Winters       21,422.5217 26,456.3725
+Prophet            12,663.4919 15,473.9776

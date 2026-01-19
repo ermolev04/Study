@@ -1,0 +1,5 @@
+if(EXISTS "D:/Всё полезное/C++/HW2/cmake-build-debug/tests/tests[1]_tests.cmake")
+  include("D:/Всё полезное/C++/HW2/cmake-build-debug/tests/tests[1]_tests.cmake")
+else()
+  add_test(tests_NOT_BUILT tests_NOT_BUILT)
+endif()

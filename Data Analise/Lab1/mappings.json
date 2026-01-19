@@ -1,0 +1,15 @@
+{
+  "class_mapping": {
+    "LT": 0,
+    "HT": 1,
+    "TD": 2,
+    "MT": 3,
+    "SPG": 4
+  },
+  "shell_mapping": {
+    "ARMOR_PIERCING": 0,
+    "ARMOR_PIERCING_CR": 1,
+    "HIGH_EXPLOSIVE": 2,
+    "HOLLOW_CHARGE": 3
+  }
+}

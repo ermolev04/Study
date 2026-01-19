@@ -1,0 +1,19 @@
+"D:\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=D:/CLion 2023.3.4/bin/ninja/win/x64/ninja.exe" -G Ninja -S "D:\Всё полезное\C++\LW2" -B "D:\Всё полезное\C++\LW2\cmake-build-debug"
+CMake Error at CMakeLists.txt:8 (find_package):
+  By not providing "FindFFmpeg.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "FFmpeg", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "FFmpeg" with any
+  of the following names:
+
+    FFmpegConfig.cmake
+    ffmpeg-config.cmake
+
+  Add the installation prefix of "FFmpeg" to CMAKE_PREFIX_PATH or set
+  "FFmpeg_DIR" to a directory containing one of the above files.  If "FFmpeg"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+
+-- Configuring incomplete, errors occurred!

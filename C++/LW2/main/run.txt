@@ -1,0 +1,241 @@
+clang -O2 main.c -o main.exe -I "..\library\ffmpeg\include" -L "..\library\ffmpeg\lib" -lavformat -lavcodec -lavutil -lswresample
+
+main.exe "rickroll354_1.mp3"
+
+clang -O2 main.c -o main.exe -I "..\library\ffmpeg\include" -L "..\library\ffmpeg\lib" -lavformat -lavcodec -lavutil -lswresample
+
+clang -O2 main.c -o main.exe -I "..\library\ffmpeg\include" "..\library\fftw" -L "..\library\ffmpeg\lib" "..\library\fftw" -lavformat -lavcodec -lavutil -lswresample
+
+clang -O2 main.c -o main.exe -I "..\library\ffmpeg\include" -I "..\library\fftw" -L "..\library\ffmpeg\lib" -L "..\library\fftw" -lavformat -lavcodec -lavutil -lswresample -llibfftw3-3
+
+main.exe "rickroll354_1.mp3" "rickroll354_2.mp3"
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <float.h>
+
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/avutil.h>
+#include <libavutil/opt.h>
+#include <libswresample/swresample.h>
+#include <fftw3.h>
+#include <string.h>
+//#include "../library/ffmpeg/include/libavformat/avformat.h"
+//#include "../library/ffmpeg/include/libavcodec/avcodec.h"
+//#include "../library/ffmpeg/include/libavutil/samplefmt.h"
+//#include "../library/ffmpeg/include/libavutil/frame.h"
+//#include "../library/ffmpeg/include/libswresample/swresample.h"
+//#include "../library/ffmpeg/include/libavutil/log.h"
+//#include "../library/ffmpeg/include/libavutil/avutil.h"
+
+int decode(char* path, double **my_arr, int *arr_size) {
+    AVFormatContext* formatCtx = NULL;
+    if (avformat_open_input(&formatCtx, path, NULL, NULL) != 0) {
+        fprintf(stderr, "Error: Failed to open input file\n");
+        return 1;
+    }
+    avformat_find_stream_info(formatCtx, NULL);
+    int audioStreamIndex = -1;
+    for (int i = 0; i < formatCtx->nb_streams; i++) {
+        if (formatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+            audioStreamIndex = i;
+            break;
+        }
+    }
+
+    if (audioStreamIndex == -1) {
+        fprintf(stderr, "Error: No audio stream found in the input file\n");
+        avformat_close_input(&formatCtx);
+        return 1;
+    }
+    AVCodecParameters* codecParams = formatCtx->streams[audioStreamIndex]->codecpar;
+    const AVCodec* codec = avcodec_find_decoder(codecParams->codec_id);
+    AVCodecContext* codecCtx = avcodec_alloc_context3(codec);
+    avcodec_parameters_to_context(codecCtx, codecParams);
+    avcodec_open2(codecCtx, codec, NULL);
+    AVPacket *packet = av_packet_alloc();
+    AVFrame *frame = av_frame_alloc();
+    double *audio_buffer;
+    int data_index = 0;
+    int data_size = 1048576 * 10;
+
+
+    printf("%i ", codecParams->sample_rate);
+    audio_buffer = malloc(data_size * sizeof(double));
+    if (!audio_buffer) {
+        fprintf(stderr, "Error: Failed to allocate memory for audio buffer\n");
+        avcodec_free_context(&codecCtx);
+        avformat_close_input(&formatCtx);
+        av_frame_free(&frame);
+        return 1;
+    }
+    SwrContext *context = NULL;
+    swr_alloc_set_opts2(&context,
+                        &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO, AV_SAMPLE_FMT_DBLP, 44100,
+                        &codecCtx->ch_layout, codecCtx->sample_fmt, codecParams->sample_rate,
+                        0, NULL);
+    swr_init(context);
+    while (av_read_frame(formatCtx, packet) >= 0) {
+        if (packet -> stream_index == audioStreamIndex) {
+            avcodec_send_packet(codecCtx, packet);
+            int ret;
+            while (avcodec_receive_frame(codecCtx, frame) == 0) {
+//                if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+//                    return 1;
+//                } else if (ret < 0) {
+//                    fprintf(stderr, "Error: Error during decoding\n");
+//                    return 1;
+//                }
+                double *buf;
+                av_samples_alloc(&buf, NULL, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_DBLP, 0);
+
+                swr_convert(context, (uint8_t**) &buf, frame->nb_samples, frame->data, frame->nb_samples) >= 0;
+                if(data_index + frame->nb_samples > data_size) {
+                    double *update_audio_buffer = realloc(audio_buffer, data_size * 2);
+                    if(update_audio_buffer != NULL) {
+                        data_size *= 2;
+                        audio_buffer = update_audio_buffer;
+                    }
+                }
+                memcpy(&audio_buffer[data_index], buf, frame->nb_samples * sizeof(double));
+                data_index += frame->nb_samples;
+//                printf("%lf\n", buf[0]);
+                // Копирование аудиоданных в буфер
+                int size = av_get_bytes_per_sample(codecCtx->sample_fmt);
+                av_frame_unref(frame);
+
+            }
+        }
+        av_packet_unref(packet);
+    }
+    data_size;
+//    for(int i = 0; i < data_size; i++) {
+//        printf("%lf\n", audio_buffer[i]);
+//    }
+//
+    printf("%i %i\n", data_size, data_index);
+
+    // Освобождение ресурсов
+//    free(audio_buffer);
+    *my_arr = audio_buffer;
+    *arr_size = data_index;
+//    free(audio_buffer);
+    avcodec_free_context(&codecCtx);
+    avformat_close_input(&formatCtx);
+    av_frame_free(&frame);
+}
+
+
+int main(int argc, char* argv[]) {
+    if (argc < 2 || argc > 3) {
+        fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
+        return 1;
+    }
+
+    av_log_set_level(0);
+    int arr_size_1;
+    double *my_arr_1;
+    int my_res_1 = decode(argv[1], &my_arr_1, &arr_size_1);
+
+    int arr_size_2, arr_size;
+    double *my_arr_2;
+    int my_res_2 = decode(argv[2], &my_arr_2, &arr_size_2);
+
+//    printf("\n%lf\n", my_arr_2[arr_size_2 - 2]);
+
+//    if(arr_size_1 > arr_size_2) {
+//        double *update_my_arr = realloc(my_arr_1, arr_size_1);
+//        if(update_my_arr != NULL) {
+//            my_arr_1 = update_my_arr;
+//        }
+//        update_my_arr = realloc(my_arr_2, arr_size_1);
+//        if(update_my_arr != NULL) {
+//            my_arr_2 = update_my_arr;
+//            memset(&my_arr_2[arr_size_2], 0, sizeof(double) * (arr_size_1 - arr_size_2));
+//        }
+//        arr_size = arr_size_1;
+//    } else {
+//        double *update_my_arr = realloc(my_arr_2, arr_size_2);
+//        if(update_my_arr != NULL) {
+//            my_arr_2 = update_my_arr;
+//        }
+//        update_my_arr = realloc(my_arr_1, arr_size_2);
+//        if(update_my_arr != NULL) {
+//            my_arr_1 = update_my_arr;
+//            memset(&my_arr_1[arr_size_1], 0, sizeof(double) * (arr_size_2 - arr_size_1));
+//        }
+//        arr_size = arr_size_2;
+//    }
+    arr_size = arr_size_2;
+
+    printf("%i\n", arr_size);
+//    return audio_buffer;
+
+
+//    for(int i = 0; i < arr_size_1; i++) {
+//        printf("%lf\n", my_arr_1[i]);
+//    }
+//    for(int i = 0; i < arr_size_1; i++) {
+//        printf("%i: %lf %lf\n", i, my_arr_1[i], my_arr_2[i]);
+//    }
+
+    double* m1 = (double*) fftw_malloc(2 * arr_size * sizeof(double));
+    double* m2 = (double*) fftw_malloc(2 * arr_size * sizeof(double));
+
+    memcpy(m1, my_arr_1, sizeof(double) * arr_size);
+    memcpy(m2, my_arr_2, sizeof(double) * arr_size);
+
+    memset(&m1[arr_size], 0, sizeof(double) * arr_size);
+    memset(&m2[arr_size], 0, sizeof(double) * arr_size);
+
+    arr_size *= 2;
+
+    fftw_complex *arr_1 = (fftw_complex*) fftw_malloc(arr_size * sizeof(fftw_complex));
+    fftw_complex *arr_2 = (fftw_complex*) fftw_malloc(arr_size * sizeof(fftw_complex));
+    fftw_plan p1 = fftw_plan_dft_r2c_1d(arr_size, m1, arr_1, FFTW_ESTIMATE);
+    fftw_plan p2 = fftw_plan_dft_r2c_1d(arr_size, m2, arr_2, FFTW_ESTIMATE);
+
+    fftw_execute(p1);
+    fftw_execute(p2);
+
+//    for(int i = 0; i < arr_size; i++) {
+//        printf("%lf %lf\n", arr_1[i][0], arr_2[i][0]);
+//    }
+
+    fftw_complex *arr = fftw_malloc(arr_size * sizeof(fftw_complex));
+    fftw_complex *ans = fftw_malloc(arr_size * sizeof(fftw_complex));
+
+
+
+    for(int i = 0; i < arr_size; i++) {
+        arr[i][0] = (arr_1[i][0] * arr_2[i][0]) / arr_size;
+//        printf("%i: %lf\n", i, arr[i][0]);
+    }
+
+//    for(int i = 0; i < 100; i++) {
+//        printf("%i: %lf\n", i, arr[i][0]);
+//    }
+
+    fftw_plan p = fftw_plan_dft_1d(arr_size, arr, ans, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_execute(p);
+
+    for(int i = 0; i < 100; i++) {
+        printf("%i: %lf\n", i, ans[i][0]);
+    }
+
+    double max = -DBL_MAX;
+    int index;
+
+    for(int i = 0; i < arr_size; i++) {
+        if(max <= ans[i][0]) {
+            max = ans[i][0];
+            index = i;
+        }
+    }
+    printf("%i\n", index);
+
+    return 0;
+}

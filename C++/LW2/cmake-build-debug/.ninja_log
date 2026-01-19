@@ -1,0 +1,5 @@
+# ninja log v5
+0	127	7354330014474336	build.ninja	c97ad3035f2ae8bd
+0	94	7343785883153319	CMakeFiles/LW2.dir/main.c.obj	c5932fa09bd3f845
+68	141	7343786113813862	LW2.exe	9dc7be54dc3e8130
+1	68	7343786113093876	CMakeFiles/LW2.dir/main/main.c.obj	89be37417f4f0df8

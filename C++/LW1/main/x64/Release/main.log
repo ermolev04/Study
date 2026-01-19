@@ -1,0 +1,4 @@
+﻿  main.cpp
+D:\Всё полезное\C++\LW1\main\main.cpp(8,2): error C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Всё полезное\C++\LW1\main\main.cpp(10,3): error C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\Всё полезное\C++\LW1\main\main.cpp(11,3): error C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.

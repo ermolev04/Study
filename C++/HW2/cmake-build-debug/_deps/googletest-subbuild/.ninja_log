@@ -1,0 +1,21 @@
+# ninja log v5
+0	51	7367428259185963	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-mkdir	a7d8edb8eb5a8e27
+0	51	7367428259185963	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-mkdir	a7d8edb8eb5a8e27
+1	2827	7367428317290270	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download	2fcbae20ad9947e8
+1	2827	7367428317290270	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download	2fcbae20ad9947e8
+2827	2898	0	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-update	15fe54c1fc87d8e0
+2827	2898	0	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-update	15fe54c1fc87d8e0
+2908	2943	7367428318450268	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-patch	e00ffaa02a681666
+2908	2943	7367428318450268	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-patch	e00ffaa02a681666
+2943	2975	7367428318770267	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-configure	d57db37da6721777
+2943	2975	7367428318770267	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-configure	d57db37da6721777
+2975	3008	7367428319100266	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-build	aef72f7f33694f27
+2975	3008	7367428319100266	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-build	aef72f7f33694f27
+3008	3040	7367428319430267	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-install	14562de2065931c
+3008	3040	7367428319430267	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-install	14562de2065931c
+3041	3074	7367428319760267	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-test	f03d334da8110539
+3041	3074	7367428319760267	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-test	f03d334da8110539
+3074	3124	7367428320260277	CMakeFiles/googletest-populate-complete	1ccaf3850f736c77
+3074	3124	7367428320260277	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-done	1ccaf3850f736c77
+3074	3124	7367428320260277	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/CMakeFiles/googletest-populate-complete	1ccaf3850f736c77
+3074	3124	7367428320260277	D:/Всё полезное/C++/HW2/cmake-build-debug/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-done	1ccaf3850f736c77

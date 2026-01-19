@@ -1,0 +1,1 @@
+add_library(quat quat.cpp quat.hpp)

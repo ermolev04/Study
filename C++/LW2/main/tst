@@ -1,0 +1,178 @@
+int decode(char *path, double **my_arr, size_t *arr_size, int max_sample_rate)
+{
+	AVFormatContext *formatCtx = NULL;
+	int res = avformat_open_input(&formatCtx, path, NULL, NULL);
+	if (res != 0)
+	{
+		return print_error(res, path);
+	}
+	res = avformat_find_stream_info(formatCtx, NULL);
+	if (res != 0)
+	{
+		avformat_close_input(&formatCtx);
+		return print_error(res, path);
+	}
+	int audioStreamIndex = -1;
+	for (size_t i = 0; i < formatCtx->nb_streams; i++)
+	{
+		if (formatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+		{
+			audioStreamIndex = i;
+			break;
+		}
+	}
+
+	if (audioStreamIndex == -1)
+	{
+		avformat_close_input(&formatCtx);
+		fprintf(stderr, "Error: No audio stream found in the input file: %s\n", path);
+		return ERROR_FORMAT_INVALID;
+	}
+	AVCodecParameters *codecParams = formatCtx->streams[audioStreamIndex]->codecpar;
+	int type = codecParams->codec_id;
+	if (type != AV_CODEC_ID_FLAC && type != AV_CODEC_ID_MP2 && type != AV_CODEC_ID_MP3 && type != AV_CODEC_ID_OPUS && type != AV_CODEC_ID_AAC)
+	{
+		avformat_close_input(&formatCtx);
+		fprintf(stderr, "Error: We can't parse audio format in the input file: %s\n", path);
+		return ERROR_UNSUPPORTED;
+	}
+	const AVCodec *codec = avcodec_find_decoder(codecParams->codec_id);
+	if(codec == NULL) {
+		avformat_close_input(&formatCtx);
+		fprintf(stderr, "Error: We can't find right codec for your file: %s\n", path);
+		return ERROR_FORMAT_INVALID;
+	}
+	AVCodecContext *codecCtx = avcodec_alloc_context3(codec);
+	if(codecCtx == NULL) {
+		avformat_close_input(&formatCtx);
+		fprintf(stderr, "Error: We can't find right codec context for your file: %s\n", path);
+		return ERROR_FORMAT_INVALID;
+	}
+	res = avcodec_parameters_to_context(codecCtx, codecParams);
+	if (res != 0)
+	{
+		return print_error(res, path);
+	}
+	res = avcodec_open2(codecCtx, codec, NULL);
+	if(res < 0) {
+		clear_data(formatCtx, codecCtx, NULL, NULL, NULL, NULL);
+		fprintf(stderr, "Error: We can't open right codec for your file: %s\n", path);
+		return ERROR_FORMAT_INVALID;
+	}
+	AVPacket *packet = av_packet_alloc();
+	if(packet == NULL) {
+		clear_data(formatCtx, codecCtx, NULL, NULL, NULL, NULL);
+		fprintf(stderr, "Error: We can't alloc packet");
+		return ERROR_NOTENOUGH_MEMORY;
+	}
+	AVFrame *frame = av_frame_alloc();
+	if(frame == NULL) {
+		clear_data(formatCtx, codecCtx, packet, NULL, NULL, NULL);
+		fprintf(stderr, "Error: We can't alloc frame");
+		return ERROR_NOTENOUGH_MEMORY;
+	}
+	double *audio_buffer;
+	int data_index = 0;
+	int data_size = TWO_ON_FIFTEENTH;
+
+	audio_buffer = malloc(data_size * sizeof(double));
+	if (!audio_buffer)
+	{
+		fprintf(stderr, "Error: Failed to allocate memory for audio buffer\n");
+		clear_data(formatCtx, codecCtx, packet, frame, NULL, audio_buffer);
+		avcodec_free_context(&codecCtx);
+		avformat_close_input(&formatCtx);
+		av_frame_free(&frame);
+		av_packet_free(&packet);
+		return ERROR_NOTENOUGH_MEMORY;
+	}
+	SwrContext *context = NULL;
+	res = swr_alloc_set_opts2(
+		&context,
+		&(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO,
+		AV_SAMPLE_FMT_DBLP,
+		max_sample_rate,
+		&codecCtx->ch_layout,
+		codecCtx->sample_fmt,
+		codecParams->sample_rate,
+		0,
+		NULL);
+	if (res != 0)
+	{
+		clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+		return print_error(res, path);
+	}
+	res = swr_init(context);
+	if (res != 0)
+	{
+		clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+		return print_error(res, path);
+	}
+	double *buf;
+	while (av_read_frame(formatCtx, packet) >= 0)
+	{
+		if (packet->stream_index == audioStreamIndex)
+		{
+			res = avcodec_send_packet(codecCtx, packet);
+			if (res != 0)
+			{
+				clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+				return print_error(res, path);
+			}
+			int ret = avcodec_receive_frame(codecCtx, frame);
+			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0)
+			{
+				fprintf(stderr, "Error during decoding\n");
+				clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+				return ERROR_DATA_INVALID;
+			}
+			while (ret == 0)
+			{
+				res = av_samples_alloc((uint8_t **)&buf, NULL, codecParams->ch_layout.nb_channels, frame->nb_samples, AV_SAMPLE_FMT_DBLP, 0);
+				if (res < 0)
+				{
+					clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+					fprintf(stderr, "Error during decoding, we need more memory\n");
+					return ERROR_NOTENOUGH_MEMORY;
+				}
+				if (swr_convert(context, (uint8_t **)&buf, frame->nb_samples, (const uint8_t **)frame->data, frame->nb_samples) < 0)
+				{
+					fprintf(stderr, "Error during decoding\n");
+					clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+					return ERROR_DATA_INVALID;
+				}
+				if (data_index + frame->nb_samples > data_size)
+				{
+					double *update_audio_buffer = realloc(audio_buffer, data_size * 10 * sizeof(double));
+					if (update_audio_buffer == NULL)
+					{
+						fprintf(stderr, "Error during decoding, we need more memory\n");
+						clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+						return ERROR_NOTENOUGH_MEMORY;
+					}
+					data_size *= 2;
+					audio_buffer = update_audio_buffer;
+				}
+
+				memcpy(&audio_buffer[data_index], buf, frame->nb_samples * sizeof(double));
+				data_index += frame->nb_samples;
+				int size = av_get_bytes_per_sample(codecCtx->sample_fmt);
+				av_frame_unref(frame);
+				ret = avcodec_receive_frame(codecCtx, frame);
+				if (ret != AVERROR_EOF && ret != AVERROR(EAGAIN) && (ret < 0))
+				{
+					fprintf(stderr, "Error during decoding\n");
+					clear_data(formatCtx, codecCtx, packet, frame, context, audio_buffer);
+					return ERROR_DATA_INVALID;
+				}
+			}
+		}
+		av_packet_unref(packet);
+	}
+	*my_arr = audio_buffer;
+	*arr_size = data_index;
+	clear_data(formatCtx, codecCtx, packet, frame, context, NULL);
+
+
+	return SUCCESS;
+}

@@ -1,0 +1,121 @@
+Dataset size: (5574, 2)
+Class balance: {'ham': 4827, 'spam': 747}
+
+Top-30 words: FILTER(custom) Euclid distance
+['to', 'call', 'free', 'your', 'txt', 'now', 'or', 'for', 'mobile', 'stop', 'text', 'claim', 'from', 'ur', 'my', 'www', 'reply', 'prize', 'me', 'on', 'it', 'our', 'cash', 'uk', 'won', '150p', 'with', 'nokia', 'have', 'only']
+
+Top-30 words: FILTER(lib) chi2
+['call', 'free', 'txt', 'claim', 'mobile', 'www', 'prize', 'to', 'stop', 'uk', '150p', 'text', 'reply', 'nokia', 'cash', 'tone', 'your', 'won', 'urgent', 'or', '16', 'co', 'service', '18', '50', 'win', 'guaranteed', 'now', '500', 'cs']
+
+Top-30 words: EMBEDDED(custom) Permutation Importance (PI)
+['ringtone', 'text', 'uk', 'txt', 'lt', 'call', 'arsenal', '88066', '50', 'know', 'latest', 'ringtoneking', 'new', 'who', 'sale', 'talk', 'order', 'let', 'my', '123', 'hope', 'hear', 'girls', 'filthy', 'cost', 'choose', 'reply', 'news', 'ltd', 'claim']
+
+Top-30 words: EMBEDDED(lib) L1-SVM (SelectFromModel)
+['00', '0207', '02073162414', '0800', '08000839402', '0870', '100', '1000', '10am', '10p', '12', '123', '150p', '150pm', '18', '200', '2003', '2007', '20p', '24hrs', '250', '2day', '40', '50', '500', '750', '800', '80488', '82242', '87077']
+
+Top-30 words: WRAPPER(custom) SFS
+['1000', '150p', '18', 'at', 'but', 'call', 'can', 'chat', 'draw', 'got', 'gt', 'have', 'he', 'how', 'll', 'me', 'min', 'my', 'rate', 'ringtone', 'service', 'stop', 'text', 'that', 'to', 'txt', 'uk', 'won', 'www']
+
+Top-30 words: WRAPPER(lib) SVM-RFE (RFECV)
+['xx', 'xmas', 'yeah', '08000839402', '0800', 'txt', 'one', 'once', 'old', 'ok', 'lol', 'appreciate', 'around', 'area', 'ard', 'asap', 'remember', 'released', 'regular', 'gender', 'gd', 'gbp', 'wrk', '02073162414', '0207', 'msgs', 'msg', 'movie', 'move', 'yup']
+
+COMMON WORDS BETWEEN FS METHODS (using Top-30)
+
+Pairwise intersections
+
+[FILTER(custom) Euclid distance] ∩ [FILTER(lib) chi2] -> 19 words
+['150p', 'call', 'cash', 'claim', 'free', 'mobile', 'nokia', 'now', 'or', 'prize', 'reply', 'stop', 'text', 'to', 'txt', 'uk', 'won', 'www', 'your']
+
+[FILTER(custom) Euclid distance] ∩ [EMBEDDED(custom) Permutation Importance (PI)] -> 7 words
+['call', 'claim', 'my', 'reply', 'text', 'txt', 'uk']
+
+[FILTER(custom) Euclid distance] ∩ [EMBEDDED(lib) L1-SVM (SelectFromModel)] -> 1 words
+['150p']
+
+[FILTER(custom) Euclid distance] ∩ [WRAPPER(custom) SFS] -> 12 words
+['150p', 'call', 'have', 'me', 'my', 'stop', 'text', 'to', 'txt', 'uk', 'won', 'www']
+
+[FILTER(custom) Euclid distance] ∩ [WRAPPER(lib) SVM-RFE (RFECV)] -> 1 words
+['txt']
+
+[FILTER(lib) chi2] ∩ [EMBEDDED(custom) Permutation Importance (PI)] -> 7 words
+['50', 'call', 'claim', 'reply', 'text', 'txt', 'uk']
+
+[FILTER(lib) chi2] ∩ [EMBEDDED(lib) L1-SVM (SelectFromModel)] -> 4 words
+['150p', '18', '50', '500']
+
+[FILTER(lib) chi2] ∩ [WRAPPER(custom) SFS] -> 11 words
+['150p', '18', 'call', 'service', 'stop', 'text', 'to', 'txt', 'uk', 'won', 'www']
+
+[FILTER(lib) chi2] ∩ [WRAPPER(lib) SVM-RFE (RFECV)] -> 1 words
+['txt']
+
+[EMBEDDED(custom) Permutation Importance (PI)] ∩ [EMBEDDED(lib) L1-SVM (SelectFromModel)] -> 2 words
+['123', '50']
+
+[EMBEDDED(custom) Permutation Importance (PI)] ∩ [WRAPPER(custom) SFS] -> 6 words
+['call', 'my', 'ringtone', 'text', 'txt', 'uk']
+
+[EMBEDDED(custom) Permutation Importance (PI)] ∩ [WRAPPER(lib) SVM-RFE (RFECV)] -> 1 words
+['txt']
+
+[EMBEDDED(lib) L1-SVM (SelectFromModel)] ∩ [WRAPPER(custom) SFS] -> 3 words
+['1000', '150p', '18']
+
+[EMBEDDED(lib) L1-SVM (SelectFromModel)] ∩ [WRAPPER(lib) SVM-RFE (RFECV)] -> 4 words
+['0207', '02073162414', '0800', '08000839402']
+
+[WRAPPER(custom) SFS] ∩ [WRAPPER(lib) SVM-RFE (RFECV)] -> 1 words
+['txt']
+
+Intersection of ALL methods
+ALL -> 0 words
+
+Words appearing in 3 methods 
+3 methods -> 14 words
+[('txt', 5), ('150p', 4), ('call', 4), ('text', 4), ('uk', 4), ('18', 3), ('50', 3), ('claim', 3), ('my', 3), ('reply', 3), ('stop', 3), ('to', 3), ('won', 3), ('www', 3)]
+
+
+
+Classification quality (F1, 5-fold CV) [NO FS]
+LogReg(L2)     : mean=0.9292, std=0.0122
+LinearSVC      : mean=0.9447, std=0.0118
+MultinomialNB  : mean=0.9477, std=0.0127
+
+Classification quality (F1, 5-fold CV) [FILTER custom (euclid)]
+LogReg(L2)     : mean=0.9284, std=0.0136
+LinearSVC      : mean=0.9412, std=0.0101
+MultinomialNB  : mean=0.9428, std=0.0158
+
+Classification quality (F1, 5-fold CV) [FILTER lib (chi2)]
+LogReg(L2)     : mean=0.9275, std=0.0125
+LinearSVC      : mean=0.9396, std=0.0130
+MultinomialNB  : mean=0.9450, std=0.0130
+
+Classification quality (F1, 5-fold CV) [EMBEDDED custom (RandomForest)]
+LogReg(L2)     : mean=0.9179, std=0.0052
+LinearSVC      : mean=0.9284, std=0.0140
+MultinomialNB  : mean=0.9222, std=0.0210
+
+Classification quality (F1, 5-fold CV) [EMBEDDED lib (L1-SVM)]
+LogReg(L2)     : mean=0.9250, std=0.0151
+LinearSVC      : mean=0.9366, std=0.0139
+MultinomialNB  : mean=0.9288, std=0.0123
+
+Classification quality (F1, 5-fold CV) [WRAPPER custom (SFS) [fixed vocab]]
+LogReg(L2)     : mean=0.8439, std=0.0281
+LinearSVC      : mean=0.8742, std=0.0134
+MultinomialNB  : mean=0.8116, std=0.0300
+
+Classification quality (F1, 5-fold CV) [WRAPPER lib (SVM-RFE)]
+LogReg(L2)     : mean=0.9323, std=0.0110
+LinearSVC      : mean=0.9425, std=0.0140
+MultinomialNB  : mean=0.9349, std=0.0191
+
+>>> Selected feature selection method for next stages: WRAPPER lib (SVM-RFE) (LinearSVC mean F1=0.9425)
+
+Clustering quality [BEFORE feature selection]
+ARI=0.1086 (external), NMI=0.0253 (external), silhouette(cosine)=-0.0039 (internal)
+
+Clustering quality [AFTER feature selection]
+ARI=-0.0713 (external), NMI=0.0208 (external), silhouette(cosine)=-0.0127 (internal)
